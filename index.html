@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#172554">
+  <meta name="description" content="Aplikasi pengelolaan stok barang dan keuangan Cahaya Idola.">
+  <title>Cahaya Idola — Stok & Keuangan</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Cahaya Idola beranda">
+        <span class="brand-mark">CI</span><span><b>Cahaya Idola</b><small>STOK & KEUANGAN</small></span>
+      </a>
+      <nav class="nav">
+        <button class="nav-link active" data-page="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-page="products"><span>▤</span> Data Produk</button>
+        <button class="nav-link" data-page="transactions"><span>⇄</span> Transaksi</button>
+        <button class="nav-link" data-page="reports"><span>▥</span> Laporan</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="offline-indicator"><i></i><span id="connection-label">Mode online</span></div>
+        <p>© <span id="year"></span> Cahaya Idola</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="menu-toggle" aria-label="Buka menu">☰</button>
+        <div><div class="eyebrow">MANAJEMEN USAHA</div><h1 id="page-title">Dashboard</h1></div>
+        <div class="top-actions"><span class="today" id="today-label"></span><button class="button button-primary" id="quick-add">＋ Tambah transaksi</button></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="welcome"><div><p class="eyebrow light">SELAMAT DATANG</p><h2>Kelola usaha lebih mudah.</h2><p>Pantau stok, pemasukan, dan pengeluaran Cahaya Idola dalam satu tempat.</p></div><div class="welcome-icon">✦</div></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total produk</span><span class="stat-icon violet">▤</span></div><strong id="stat-products">0</strong><small>Jenis produk terdaftar</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Total stok</span><span class="stat-icon blue">▦</span></div><strong id="stat-stock">0</strong><small>Unit barang tersedia</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Total pemasukan</span><span class="stat-icon green">↗</span></div><strong id="stat-income">Rp0</strong><small>Akumulasi transaksi masuk</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Total pengeluaran</span><span class="stat-icon orange">↙</span></div><strong id="stat-expense">Rp0</strong><small>Akumulasi transaksi keluar</small></article>
+        </div>
+        <div class="summary-grid">
+          <article class="panel balance-panel"><div class="panel-heading"><div><p class="eyebrow">RINGKASAN KEUANGAN</p><h3>Saldo saat ini</h3></div><span class="pill">Keseluruhan</span></div><strong id="stat-balance" class="balance-value">Rp0</strong><p class="muted">Pemasukan dikurangi pengeluaran yang tercatat.</p><div class="balance-bar"><span id="balance-bar"></span></div><div class="balance-legend"><span>● Pemasukan</span><span>● Pengeluaran</span></div></article>
+          <article class="panel low-stock-panel"><div class="panel-heading"><div><p class="eyebrow">PERLU DIPERHATIKAN</p><h3>Stok menipis</h3></div><span class="pill warning" id="low-stock-count">0 item</span></div><div id="low-stock-list" class="compact-list"><div class="empty-state">Belum ada produk dengan stok menipis.</div></div></article>
+        </div>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">AKTIVITAS TERBARU</p><h3>Transaksi terakhir</h3></div><button class="text-button" data-goto="transactions">Lihat semua →</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Deskripsi</th><th>Kategori</th><th>Tipe</th><th class="align-right">Jumlah</th></tr></thead><tbody id="recent-transactions"></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="page-products">
+        <div class="section-toolbar"><div><h2>Data produk</h2><p class="muted">Kelola katalog dan jumlah persediaan barang.</p></div><button class="button button-primary" id="add-product">＋ Tambah produk</button></div>
+        <div class="filter-row"><input id="product-search" class="search-input" placeholder="Cari nama atau SKU produk..." aria-label="Cari produk"><select id="stock-filter" aria-label="Filter stok"><option value="all">Semua stok</option><option value="low">Stok menipis</option><option value="out">Stok habis</option></select></div>
+        <article class="panel"><div class="table-wrap"><table><thead><tr><th>Produk</th><th>SKU</th><th>Harga modal</th><th>Harga jual</th><th>Stok</th><th>Status</th><th></th></tr></thead><tbody id="products-table"></tbody></table></div><div id="products-empty" class="empty-state hidden">Belum ada produk. Tambahkan produk pertama Anda.</div></article>
+      </section>
+
+      <section class="page" id="page-transactions">
+        <div class="section-toolbar"><div><h2>Transaksi keuangan</h2><p class="muted">Catat pemasukan, pengeluaran, penjualan, dan pembelian stok.</p></div><button class="button button-primary" id="add-transaction">＋ Tambah transaksi</button></div>
+        <div class="stats-inline"><div><small>Pemasukan</small><b id="tx-income">Rp0</b></div><div><small>Pengeluaran</small><b id="tx-expense">Rp0</b></div><div><small>Selisih</small><b id="tx-net">Rp0</b></div></div>
+        <div class="filter-row"><input id="transaction-search" class="search-input" placeholder="Cari deskripsi atau kategori..." aria-label="Cari transaksi"><select id="transaction-filter"><option value="all">Semua tipe</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><input type="month" id="month-filter" aria-label="Filter bulan"></div>
+        <article class="panel"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Deskripsi</th><th>Kategori</th><th>Tipe</th><th class="align-right">Jumlah</th><th></th></tr></thead><tbody id="transactions-table"></tbody></table></div><div id="transactions-empty" class="empty-state hidden">Belum ada transaksi yang cocok.</div></article>
+      </section>
+
+      <section class="page" id="page-reports">
+        <div class="section-toolbar"><div><h2>Laporan usaha</h2><p class="muted">Ringkasan keuangan dan persediaan berdasarkan data tersimpan.</p></div><div class="toolbar-actions"><button class="button button-secondary" id="export-csv">Unduh transaksi CSV</button><button class="button button-primary" id="export-backup">Cadangkan data</button></div></div>
+        <div class="stats-grid report-stats"><article class="stat-card"><small>Total pemasukan</small><strong id="report-income">Rp0</strong></article><article class="stat-card"><small>Total pengeluaran</small><strong id="report-expense">Rp0</strong></article><article class="stat-card"><small>Laba/rugi kas</small><strong id="report-net">Rp0</strong></article><article class="stat-card"><small>Nilai persediaan (modal)</small><strong id="report-inventory">Rp0</strong></article></div>
+        <div class="report-grid"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">RINGKASAN</p><h3>Komposisi keuangan</h3></div></div><div id="report-breakdown" class="breakdown"></div></article><article class="panel"><div class="panel-heading"><div><p class="eyebrow">PENGELOLAAN DATA</p><h3>Backup & pemulihan</h3></div></div><p class="muted">Simpan salinan data secara berkala. File backup dapat dipulihkan di browser/perangkat lain.</p><label class="button button-secondary file-button">Pulihkan dari file JSON<input type="file" id="import-backup" accept="application/json"></label><p class="tiny muted">Pemulihan akan mengganti data yang saat ini tersimpan di browser.</p></article></div>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">PERSEDIAAN</p><h3>Ringkasan stok produk</h3></div><span class="pill" id="report-product-count">0 produk</span></div><div class="table-wrap"><table><thead><tr><th>Produk</th><th>Stok</th><th>Harga modal</th><th>Nilai stok</th></tr></thead><tbody id="inventory-report"></tbody></table></div></article>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modal-backdrop">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header"><div><p class="eyebrow">CAHAYA IDOLA</p><h2 id="modal-title">Tambah data</h2></div><button class="icon-button" id="modal-close" aria-label="Tutup">×</button></div>
+      <form id="product-form" class="form-grid hidden">
+        <input type="hidden" id="product-id">
+        <label class="full">Nama produk<input id="product-name" required maxlength="80" placeholder="Contoh: Hijab Pashmina"></label>
+        <label>SKU / Kode<input id="product-sku" maxlength="30" placeholder="HJB-001"></label>
+        <label>Kategori<input id="product-category" maxlength="40" placeholder="Hijab"></label>
+        <label>Harga modal (Rp)<input id="product-cost" type="number" min="0" step="1" required placeholder="25000"></label>
+        <label>Harga jual (Rp)<input id="product-price" type="number" min="0" step="1" required placeholder="35000"></label>
+        <label>Jumlah stok<input id="product-stock" type="number" min="0" step="1" required placeholder="10"></label>
+        <label>Batas stok menipis<input id="product-min" type="number" min="0" step="1" value="5" required></label>
+        <div class="form-actions full"><button type="button" class="button button-secondary" data-cancel>Batal</button><button class="button button-primary" type="submit">Simpan produk</button></div>
+      </form>
+      <form id="transaction-form" class="form-grid hidden">
+        <input type="hidden" id="transaction-id">
+        <label>Tipe transaksi<select id="transaction-type"><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select></label>
+        <label>Tanggal<input id="transaction-date" type="date" required></label>
+        <label class="full">Deskripsi<input id="transaction-description" required maxlength="100" placeholder="Contoh: Penjualan hijab"></label>
+        <label>Kategori<select id="transaction-category"><option>Penjualan</option><option>Pembelian stok</option><option>Operasional</option><option>Modal</option><option>Lainnya</option></select></label>
+        <label>Jumlah (Rp)<input id="transaction-amount" type="number" min="1" step="1" required placeholder="150000"></label>
+        <label class="full">Hubungkan dengan produk (opsional)<select id="transaction-product"><option value="">Tidak terkait produk</option></select><small class="field-hint">Pilih produk untuk mencatat pergerakan stok otomatis: pemasukan menambah stok, pengeluaran mengurangi stok.</small></label>
+        <label id="quantity-field" class="full hidden">Jumlah unit<input id="transaction-quantity" type="number" min="1" step="1" value="1"><small class="field-hint">Stok akan disesuaikan saat transaksi disimpan.</small></label>
+        <div class="form-actions full"><button type="button" class="button button-secondary" data-cancel>Batal</button><button class="button button-primary" type="submit">Simpan transaksi</button></div>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
